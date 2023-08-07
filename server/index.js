@@ -7,15 +7,15 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
+app.use(express.static('public'))
 
 app.get("/api/products", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
   res.json(products);
 });
 
 app.get("/api/products/:id", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
   const product = products.find((item) => item._id === req.params.id);
   res.json(product);
 });

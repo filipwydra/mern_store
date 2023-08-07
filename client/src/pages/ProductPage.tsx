@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
@@ -10,12 +10,23 @@ import {
   Button,
   Form,
 } from "react-bootstrap";
-import products from "../products";
 import Rating from "../components/Rating";
+import axios from "axios";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
-  const product = products.find((product) => product._id === productId) as any;
+  const [product, setProduct] = useState<any>();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/api/products/${productId}`
+      );
+      setProduct(data);
+    };
+
+    fetchProduct();
+  }, [productId]);
 
   const navigate = useNavigate();
 
@@ -27,7 +38,7 @@ const ProductScreen = () => {
     navigate("/cart");
   };
 
-  return (
+  return product ? (
     <>
       <Link className="btn btn-light my-3" to="/">
         Go Back
@@ -160,6 +171,8 @@ const ProductScreen = () => {
         </Row>
       </>
     </>
+  ) : (
+    <div>Loading...</div>
   );
 };
 
